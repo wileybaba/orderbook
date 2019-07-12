@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react"
+import LoaderIcon from "react-loader-icon";
+import PairSelect from "./PairSelect"
 
 export default function OrderBookTable(props) {
 
@@ -7,12 +9,13 @@ export default function OrderBookTable(props) {
   const [poloBids, setPoloBids] = useState([])
   const [bittrexBids, setBittrexBids] = useState([])
   const [depth, setDepth] = useState(6)
+  const [loaded, setLoaded] = useState(false)
 
   const exchangeDepth = depth/2
 
   const proxyURL   = "https://cors-anywhere.herokuapp.com/",
-        poloURL    = "https://poloniex.com/public?command=returnOrderBook&currencyPair=BTC_ETH&depth=" + exchangeDepth,
-        bittrexURL = "https://api.bittrex.com/api/v1.1/public/getorderbook?market=BTC-ETH&type=both"
+        poloURL    = "https://poloniex.com/public?command=returnOrderBook&currencyPair="+props.pairSelected+"&depth="+exchangeDepth,
+        bittrexURL = "https://api.bittrex.com/api/v1.1/public/getorderbook?market="+props.pairSelected.replace(/_/g, '-')+"&type=both"
 
   const fetchPoloniex = async () => {
 
@@ -26,6 +29,7 @@ export default function OrderBookTable(props) {
       })
       .catch(err => {
         console.log(err)
+        console.log('test')
       })
   }
 
@@ -70,7 +74,8 @@ export default function OrderBookTable(props) {
     const interval = setInterval(() => {
         fetchPoloniex()
         fetchBittrex()
-    }, 1000);
+        setLoaded(true)
+    }, 3000);
     return () => clearInterval(interval);
   }, [])
 
@@ -87,7 +92,6 @@ export default function OrderBookTable(props) {
   //
   //   return a;
   // }
-
 
 
   const asksTable = totalAsks.reverse().map(ask => {
@@ -114,41 +118,43 @@ export default function OrderBookTable(props) {
 
     <section style={{marginTop: "5%", marginBottom: "5%", marginLeft: "25%", marginRight: "25%"}}>
       <h1>Orderbook</h1>
-    <div className="tbl-header">
-    <table cellPadding="0" cellSpacing="0" border="0">
-      <thead>
-        <tr>
-          <th>Price (₿)</th>
-          <th>Quantity</th>
-          <th>Exchange</th>
-        </tr>
-      </thead>
-    </table>
+      <PairSelect pairSelected={props.pairSelected} setPairSelected={props.setPairSelected} />
+      <div className="tbl-header">
+      <table cellPadding="0" cellSpacing="0" border="0">
+        <thead>
+          <tr>
+            <th>Price (₿)</th>
+            <th>Quantity</th>
+            <th>Exchange</th>
+          </tr>
+        </thead>
+      </table>
+      </div>
+      <div className="tbl-content">
+        {!loaded && <LoaderIcon color={"white"} />}
+        {loaded &&
+        <table cellPadding="0" cellSpacing="0" border="0">
+        <tbody>
+          {asksTable}
+          <tr style={{borderTop: "none"}}>
+            <td style={{color: "orange"}}>Asks</td>
+            <td />
+            <td />
+          </tr>
+          <tr>
+            <td><strong>Spread: {spread}</strong></td>
+            <td />
+            <td />
+          </tr>
+          <tr>
+            <td style={{color: "#98f542"}}>Bids</td>
+            <td />
+            <td />
+          </tr>
+          {bidsTable}
+        </tbody>
+      </table>}
     </div>
-
-    <div className="tbl-content">
-     <table cellPadding="0" cellSpacing="0" border="0">
-     <tbody>
-        {asksTable}
-        <tr style={{borderTop: "none"}}>
-          <td style={{color: "orange"}}>Asks</td>
-          <td />
-          <td />
-        </tr>
-        <tr>
-          <td><strong>Spread: {spread}</strong></td>
-          <td />
-          <td />
-        </tr>
-        <tr>
-          <td style={{color: "#98f542"}}>Bids</td>
-          <td />
-          <td />
-        </tr>
-        {bidsTable}
-      </tbody>
-    </table>
-  </div>
   </section>
 
   )

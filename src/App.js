@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import OrderBookTable from './components/OrderBookTable'
+import StateContainer from './components/StateContainer'
 
 function App() {
   return (
     <div className="App">
-      <OrderBookTable />
+      <StateContainer />
     </div>
   );
 }

@@ -9,6 +9,8 @@
   "dependencies": {
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-loader-icon": "^1.0.1",
+    "react-radio-buttons": "^1.2.2",
     "react-scripts": "3.0.1"
   },
   "scripts": {
