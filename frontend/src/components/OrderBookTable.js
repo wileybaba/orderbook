@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { Segment, Label, Table } from 'semantic-ui-react'
 
 export default function OrderBookTable(props) {
 
