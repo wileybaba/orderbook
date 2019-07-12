@@ -1,0 +1,15 @@
+{
+  "name": "orderbook",
+  "version": "1.0.0",
+  "description": "A simple cryptocurrency orderbook.",
+  "main": "server.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Wiley McKay Conte",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.7.0",
+    "node-fetch": "^2.6.0"
+  }
+}
