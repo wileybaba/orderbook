@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import LoaderIcon from "react-loader-icon";
+import LoaderIcon from "react-loader-icon"
 import PairSelect from "./PairSelect"
 
 export default function OrderBookTable(props) {
@@ -19,7 +19,7 @@ export default function OrderBookTable(props) {
 
   const fetchBooks = async pair => {
 
-    const   proxyURL   = "https://cors-anywhere.herokuapp.com/",
+    const proxyURL   = "https://cors-anywhere.herokuapp.com/",
           poloURL    = "https://poloniex.com/public?command=returnOrderBook&currencyPair=" + pair + "&depth=" + exchangeDepth,
           bittrexURL = "https://api.bittrex.com/api/v1.1/public/getorderbook?market=" + pair.replace(/_/g, '-') + "&type=both"
 
@@ -73,7 +73,6 @@ export default function OrderBookTable(props) {
   let totalAsks = [...poloAsks, ...bittrexAsks].sort((a,b) => (a-b))
   let totalBids = [...poloBids, ...bittrexBids].sort((a,b) => (b-a))
 
-
 //A cumulative sum function that pushes the combined volumes at each price point into the arrays of asks/bids
   const addCumulativeVolume = arr => {
     const quantities = arr.map((val, i) => {
@@ -89,7 +88,6 @@ export default function OrderBookTable(props) {
 
   const lowestAsk = totalAsks.filter((item, _, arr) => item === arr[0]).flat()
   const highestBid = totalBids.filter((item, _, arr) => item === arr[0]).flat()
-
   const spread = (lowestAsk[0] - highestBid[0]).toFixed(decimalAccuracy)
 
   useEffect(() => {
@@ -119,7 +117,6 @@ export default function OrderBookTable(props) {
   })
 
   return (
-
     <section style={{marginTop: "5%", marginBottom: "5%", marginLeft: "25%", marginRight: "25%"}}>
       <h1>Orderbook</h1>
       <PairSelect
@@ -169,6 +166,5 @@ export default function OrderBookTable(props) {
       </table>}
     </div>
   </section>
-
   )
 }
