@@ -8,15 +8,18 @@ export default function OrderBookTable(props) {
   const [bittrexAsks, setBittrexAsks] = useState([])
   const [poloBids, setPoloBids] = useState([])
   const [bittrexBids, setBittrexBids] = useState([])
-  const [depth, setDepth] = useState(6)
-  const [decimalAccuracy, setDecimalAccuracy] = useState(9)
   const [loaded, setLoaded] = useState(false)
 
+  const decimalAccuracy = 8
+
+//Defines the number of [price, quantity] pairs to be returned by the API
+//Because Bittrex returns both bids and asks in a single call, divide by two
+  const depth = 6
   const exchangeDepth = depth/2
 
   const fetchBooks = async pair => {
 
-    let   proxyURL   = "https://cors-anywhere.herokuapp.com/",
+    const   proxyURL   = "https://cors-anywhere.herokuapp.com/",
           poloURL    = "https://poloniex.com/public?command=returnOrderBook&currencyPair=" + pair + "&depth=" + exchangeDepth,
           bittrexURL = "https://api.bittrex.com/api/v1.1/public/getorderbook?market=" + pair.replace(/_/g, '-') + "&type=both"
 
@@ -47,6 +50,11 @@ export default function OrderBookTable(props) {
       })
   }
 
+
+//Standardizes the data returned from API calls
+//For ease of programming this example, I used Floats to represent price and quantity data
+//This is NOT the reccommended data structure to deal with currency, and I'm curious to learn
+//what you're using to handle monetary values.
   const normalizePolo = obj => {
     let newArr = obj.map((val, i) => {
       return [parseFloat(val[0]), val[1], "Poloniex"]
@@ -65,6 +73,8 @@ export default function OrderBookTable(props) {
   let totalAsks = [...poloAsks, ...bittrexAsks].sort((a,b) => (a-b))
   let totalBids = [...poloBids, ...bittrexBids].sort((a,b) => (b-a))
 
+
+//A cumulative sum function that pushes the combined volumes at each price point into the arrays of asks/bids
   const addCumulativeVolume = arr => {
     const quantities = arr.map((val, i) => {
       return [val[1]]
@@ -84,7 +94,7 @@ export default function OrderBookTable(props) {
 
   useEffect(() => {
     fetchBooks(props.pairSelected)
-  }, fetchBooks)
+  }, [])
 
   const asksTable = addCumulativeVolume(totalAsks).reverse().map(ask => {
       return (
