@@ -19,8 +19,6 @@ export default function OrderBookTable(props) {
 
   const fetchBooks = async pair => {
 
-    console.log('HERE')
-
     // Used to ensure all data has been pulled before loaded is set to true
     let count = 0
 
