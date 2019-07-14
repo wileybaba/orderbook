@@ -37,7 +37,6 @@ export default function OrderBookTable(props) {
       })
       .catch(err => {
         console.log(err)
-        console.log('test')
       })
 
     await fetch(proxyURL+bittrexURL)
@@ -102,7 +101,7 @@ export default function OrderBookTable(props) {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchBooks(pair)
-    }, 1000);
+    }, 3000);
     return () => clearInterval(interval);
   }, pair)
 
