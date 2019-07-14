@@ -102,7 +102,7 @@ export default function OrderBookTable(props) {
     fetchBooks(pair)
     const interval = setInterval(() => {
       fetchBooks(pair)
-    }, 1000);
+    }, 3000);
     return () => clearInterval(interval);
   }, [pair])
 
