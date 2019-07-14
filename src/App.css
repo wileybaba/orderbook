@@ -1,4 +1,4 @@
-
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
 
 table{
   width: 100%;
@@ -38,8 +38,6 @@ td{
   color: #fff;
   border-bottom: solid 1px rgba(255,255,255,0.1);
 }
-
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,300,700);
 
 body{
   background: -webkit-linear-gradient(left, #4293f5, #425af5);

@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import OrderBookTable from './OrderBookTable'
 
-export default function StateContainer(props){
+export default function StateContainer(){
 
   const [pairSelected, setPairSelected] = useState("BTC_ETH")
+
   return (
     <OrderBookTable pairSelected={pairSelected} setPairSelected={setPairSelected} />
   )

@@ -7,6 +7,7 @@
     "node": "11.14.0"
   },
   "dependencies": {
+    "@blueprintjs/core": "^3.17.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-loader-icon": "^1.0.1",
