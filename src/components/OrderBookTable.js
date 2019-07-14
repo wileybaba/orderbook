@@ -18,7 +18,7 @@ export default function OrderBookTable(props) {
   const exchangeDepth = depth/2
 
   const fetchBooks = async pair => {
-
+    
     // Used to ensure all data has been pulled before loaded is set to true
     let count = 0
 
