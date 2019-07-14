@@ -12,12 +12,15 @@ export default function OrderBookTable(props) {
 
   const decimalAccuracy = 8
 
-//Defines the number of [price, quantity] pairs to be returned by the API
-//Because Bittrex returns both bids and asks in a single call, divide by two
+// Defines the number of [price, quantity] pairs to be returned by the API
+// ecause Bittrex returns both bids and asks in a single call, divide by two
   const depth = 6
   const exchangeDepth = depth/2
 
   const fetchBooks = async pair => {
+
+    // Used to ensure all data has been pulled before loaded is set to true
+    let count = 0
 
     const proxyURL   = "https://cors-anywhere.herokuapp.com/",
           poloURL    = "https://poloniex.com/public?command=returnOrderBook&currencyPair=" + pair + "&depth=" + exchangeDepth,
@@ -30,6 +33,7 @@ export default function OrderBookTable(props) {
       .then(resData => {
         setPoloAsks(normalizePolo(resData.asks))
         setPoloBids(normalizePolo(resData.bids))
+        count ++
       })
       .catch(err => {
         console.log(err)
@@ -43,7 +47,10 @@ export default function OrderBookTable(props) {
       .then(resData => {
         setBittrexBids(normalizeBittrex(resData.result.buy.slice(0, exchangeDepth)))
         setBittrexAsks(normalizeBittrex(resData.result.sell.slice(0, exchangeDepth)))
-        setLoaded(true)
+        count ++
+        if (count === 2) {
+          setLoaded(true)
+        }
       })
       .catch(err => {
         console.log(err)
@@ -51,10 +58,10 @@ export default function OrderBookTable(props) {
   }
 
 
-//Standardizes the data returned from API calls
-//For ease of programming this example, I used Floats to represent price and quantity data
-//This is NOT the reccommended data structure to deal with currency, and I'm curious to learn
-//what you're using to handle monetary values.
+// Standardizes the data returned from API calls
+// For ease of programming this example, I used Floats to represent price and quantity data.
+// This is NOT the reccommended data structure to deal with currency, and I'm curious to learn
+// what you're using to handle monetary values.
   const normalizePolo = obj => {
     let newArr = obj.map((val, i) => {
       return [parseFloat(val[0]), val[1], "Poloniex"]
@@ -73,7 +80,7 @@ export default function OrderBookTable(props) {
   let totalAsks = [...poloAsks, ...bittrexAsks].sort((a,b) => (a-b))
   let totalBids = [...poloBids, ...bittrexBids].sort((a,b) => (b-a))
 
-//A cumulative sum function that pushes the combined volumes at each price point into the arrays of asks/bids
+// Cumulative sum function that pushes the combined volumes at each price point into the arrays of asks/bids
   const addCumulativeVolume = arr => {
     const quantities = arr.map((val, i) => {
       return [val[1]]
@@ -90,9 +97,14 @@ export default function OrderBookTable(props) {
   const highestBid = totalBids.filter((item, _, arr) => item === arr[0]).flat()
   const spread = (lowestAsk[0] - highestBid[0]).toFixed(decimalAccuracy)
 
+  const pair = props.pairSelected
+
   useEffect(() => {
-    fetchBooks(props.pairSelected)
-  }, [])
+    const interval = setInterval(() => {
+      fetchBooks(pair)
+    }, 1000);
+    return () => clearInterval(interval);
+  }, pair)
 
   const asksTable = addCumulativeVolume(totalAsks).reverse().map(ask => {
       return (
