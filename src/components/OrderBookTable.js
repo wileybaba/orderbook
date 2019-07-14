@@ -100,10 +100,10 @@ export default function OrderBookTable(props) {
 
   useEffect(() => {
     fetchBooks(pair)
-    const interval = setInterval(() => {
-      fetchBooks(pair)
-    }, 3000);
-    return () => clearInterval(interval);
+    // const interval = setInterval(() => {
+    //   fetchBooks(pair)
+    // }, 3000);
+    // return () => clearInterval(interval);
   }, [pair])
 
   const asksTable = addCumulativeVolume(totalAsks).reverse().map(ask => {
