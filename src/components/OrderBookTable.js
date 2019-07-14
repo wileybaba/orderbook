@@ -19,6 +19,8 @@ export default function OrderBookTable(props) {
 
   const fetchBooks = async pair => {
 
+    console.log('HERE')
+
     // Used to ensure all data has been pulled before loaded is set to true
     let count = 0
 
@@ -102,9 +104,9 @@ export default function OrderBookTable(props) {
     fetchBooks(pair)
     const interval = setInterval(() => {
       fetchBooks(pair)
-    }, 5000);
+    }, 1000);
     return () => clearInterval(interval);
-  }, [fetchBooks, pair])
+  }, [pair])
 
   const asksTable = addCumulativeVolume(totalAsks).reverse().map(ask => {
       return (
