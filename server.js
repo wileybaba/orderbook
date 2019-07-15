@@ -2,6 +2,7 @@ const Koa = require("koa")
 const Router = require("koa-router")
 const cors = require("koa2-cors")
 const bodyParser = require("koa-body-parser")
+const static = require('koa-static');
 const fetch = require("node-fetch")
 require('dotenv').config()
 
@@ -89,5 +90,6 @@ app
   .use(router.routes())
   .use(bodyParser)
 
-app.listen(8001)
-console.log("Listening on port 8001")
+  const port = process.env.PORT || 8000;
+  app.listen(port);
+  console.log(`Listening on port ${port}`
