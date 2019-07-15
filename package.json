@@ -16,7 +16,8 @@
   "devDependencies": {},
   "scripts": {
     "test": "test",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "heroku-postbuild": "cd frontend && npm install && npm build"
   },
   "repository": {
     "type": "git",
