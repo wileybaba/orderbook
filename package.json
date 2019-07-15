@@ -17,7 +17,7 @@
   "scripts": {
     "test": "test",
     "start": "nodemon server.js",
-    "heroku-postbuild": "cd frontend && npm install && npm build"
+    "heroku-postbuild": "cd frontend && npm install && npm run build"
   },
   "repository": {
     "type": "git",
