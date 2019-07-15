@@ -7,7 +7,6 @@
     "node": "11.14.0"
   },
   "dependencies": {
-    "jest": "^24.8.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-loader-icon": "^1.0.1",
