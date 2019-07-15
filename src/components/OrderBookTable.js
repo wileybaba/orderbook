@@ -22,7 +22,7 @@ export default function OrderBookTable(props) {
     // Used to ensure all data has been pulled before loaded is set to true
     let count = 0
 
-    const proxyURL   = "https://crossorigin.me/",
+    const proxyURL   = "https://cors-anywhere.herokuapp.com/",
           poloURL    = "https://poloniex.com/public?command=returnOrderBook&currencyPair=" + pair + "&depth=" + exchangeDepth,
           bittrexURL = "https://api.bittrex.com/api/v1.1/public/getorderbook?market=" + pair.replace(/_/g, '-') + "&type=both"
 
