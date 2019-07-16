@@ -5,16 +5,12 @@ import APIurl from "../deploy"
 
 export default function OrderBookTable(props) {
 
-  const [poloAsks, setPoloAsks] = useState([])
-  const [bittrexAsks, setBittrexAsks] = useState([])
-  const [poloBids, setPoloBids] = useState([])
-  const [bittrexBids, setBittrexBids] = useState([])
+  const [pairSelected, setPairSelected] = useState("BTC_ETH")
+  const [totalAsks, setTotalAsks] = useState([])
+  const [totalBids, setTotalBids] = useState([])
   const [loaded, setLoaded] = useState(false)
 
   const decimalAccuracy = 8
-
-  let totalAsks = [...poloAsks, ...bittrexAsks].sort((a,b) => (a-b))
-  let totalBids = [...poloBids, ...bittrexBids].sort((a,b) => (b-a))
 
 // Cumulative sum function that pushes the combined volumes at each price point into the arrays of asks/bids
   const addCumulativeVolume = arr => {
@@ -32,33 +28,6 @@ export default function OrderBookTable(props) {
   const lowestAsk = totalAsks.filter((item, _, arr) => item === arr[0]).flat()
   const highestBid = totalBids.filter((item, _, arr) => item === arr[0]).flat()
   const spread = (lowestAsk[0] - highestBid[0]).toFixed(decimalAccuracy)
-
-  const fetchBooks = async pair => {
-
-    await fetch(`${APIurl}orderbook/${pair}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(res => {
-        return res.json();
-      })
-      .then(resData => {
-        setPoloAsks(resData.poloAsks)
-        setPoloBids(resData.poloBids)
-        setBittrexAsks(resData.bittrexAsks)
-        setBittrexBids(resData.bittrexBids)
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-
-  useEffect(() => {
-    fetchBooks(props.pairSelected)
-    setLoaded(true)
-  }, [props.pairSelected])
 
   const asksTable = addCumulativeVolume(totalAsks).reverse().map(ask => {
       return (
@@ -82,17 +51,38 @@ export default function OrderBookTable(props) {
     )
   })
 
+  useEffect(() => {
+    const fetchBooks = async pair => {
+      setLoaded(false)
+      const response = await fetch(`${APIurl}orderbook/${pair}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      const data = await response.json()
+
+      console.log(response)
+      console.log(`Orderbook data: ${data.totalAsks}`)
+
+      setTotalAsks(data.totalAsks)
+      setTotalBids(data.totalBids)
+      setLoaded(true)
+    }
+
+    fetchBooks(pairSelected)
+
+  }, [pairSelected, setTotalAsks, setTotalBids])
+
   return (
-    <section style={{marginTop: "5%", marginBottom: "5%", marginLeft: "25%", marginRight: "25%"}}>
+    <section style={{marginTop: "2rem", marginBottom: "2rem", marginLeft: "20%", marginRight: "20%"}}>
       <h1>Orderbook</h1>
       <PairSelect
-        pairSelected={props.pairSelected}
-        setPairSelected={props.setPairSelected}
-        fetchBooks={fetchBooks}
-        loaded={loaded}
-        setLoaded={setLoaded}/>
+        pairSelected={pairSelected}
+        setPairSelected={setPairSelected}
+        />
       <div style={{marginTop: "2%"}} className="tbl-header">
-      <table cellPadding="0" cellSpacing="0" border="0">
+      <table>
         <thead>
           <tr>
             <th>Price (₿)</th>
@@ -106,7 +96,7 @@ export default function OrderBookTable(props) {
       <div className="tbl-content">
         {!loaded && <LoaderIcon color={"white"} />}
         {loaded &&
-        <table cellPadding="0" cellSpacing="0" border="0">
+        <table>
         <tbody>
           {asksTable}
           <tr style={{borderTop: "none"}}>

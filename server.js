@@ -24,16 +24,12 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-let poloBids = []
-let poloAsks = []
-let bittrexBids = []
-let bittrexAsks = []
-
 let exchangeDepth = 3
 
-router.get('/orderbook/:pair', (ctx, next) => {
-  fetchBooks(ctx.params.pair)
-  ctx.body = {poloBids, poloAsks, bittrexBids, bittrexAsks}
+router.get('/orderbook/:pair', async (ctx, next) => {
+
+  ctx.body = await fetchBooks(ctx.params.pair)
+  console.log(ctx.body)
 })
 
 router.get('/test', (ctx, next) => {
@@ -41,6 +37,11 @@ router.get('/test', (ctx, next) => {
 })
 
 const fetchBooks = async pair => {
+
+  let poloBids = []
+  let poloAsks = []
+  let bittrexBids = []
+  let bittrexAsks = []
 
   const poloURL    = "https://poloniex.com/public?command=returnOrderBook&currencyPair=" + pair + "&depth=" + exchangeDepth,
         bittrexURL = "https://api.bittrex.com/api/v1.1/public/getorderbook?market=" + pair.replace(/_/g, '-') + "&type=both"
@@ -52,6 +53,8 @@ const fetchBooks = async pair => {
     .then(resData => {
       poloAsks = normalizePolo(resData.asks)
       poloBids = normalizePolo(resData.bids)
+
+      return poloAsks, poloBids
     })
     .catch(err => {
       console.log(err)
@@ -68,6 +71,11 @@ const fetchBooks = async pair => {
     .catch(err => {
       console.log(err)
     })
+
+  const totalBids = [...poloBids, ...bittrexBids].sort((a,b) => (b-a))
+  const totalAsks = [...poloAsks, ...bittrexAsks].sort((a,b) => (a-b))
+
+  return {totalBids, totalAsks}
 }
 
 const normalizePolo = obj => {

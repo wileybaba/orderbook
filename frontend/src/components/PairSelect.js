@@ -10,7 +10,7 @@ export default function PairSelect(props){
   return (
     <RadioGroup
       value={props.pairSelected}
-      onChange={ handleChange } horizontal>
+      onChange={handleChange} horizontal>
       <RadioButton
         value="BTC_ETH">
         BTC/ETH
